@@ -5,6 +5,10 @@ description: Complete monitoring stack with Gigapipe & Clickhouse
 type: application
 
 version: 0.1.0
+maintainers:
+- name: lur1an
+  email: lurian-code@protonmail.com
+  url: https://github.com/lur1an
 
 appVersion: "v4.0.15-alpha"
 
