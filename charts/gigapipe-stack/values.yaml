@@ -1,15 +1,25 @@
 clickhouse:
   # Storage class for ClickHouse and Keeper PVCs. If empty, the default storage class will be used
   storageClass: ""
+  # Increase shards and/or replicas to scale ClickHouse
   shards: 1
   replicas: 1
-  # keeper:
-  #   replicas: 3
+  # If shards > 1 or replicas > 1, keeper will be deployed
+  keeper:
+    replicas: 3
 
 gigapipe:
   replicaCount: 1
-  autoscaling:
-    enabled: true
+  
+  image:
+    repository: ghcr.io/metrico/gigapipe
+    tag: "v4.0.16-beta"
+    pullPolicy: IfNotPresent
+  
+  service:
+    type: ClusterIP
+    port: 3100
+  
   resources: 
     requests:
       cpu: 500m
@@ -17,17 +27,17 @@ gigapipe:
     limits:
       cpu: 1000m
       memory: 2Gi
-  fullnameOverride: gigapipe
+  
   env:
     LOG_DRILLDOWN: "true"
     CLICKHOUSE_SERVER: clickhouse-gigapipe
     CLICKHOUSE_DB: gigapipe
     CLICKHOUSE_AUTH: gigapipe:gigapipe
     CLUSTER_NAME: gigapipe
-
-  image:
-    repository: ghcr.io/metrico/gigapipe
-    tag: "v4.0.16-beta"
+  
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
 
 grafana:
   adminUser: gigapipe
@@ -61,7 +71,7 @@ grafana:
       - name: Logging
         type: loki
         uid: loki
-        url: http://monitoring-gigapipe:3100
+        url: http://gigapipe:3100
       - name: Tempo
         type: tempo
-        url: http://monitoring-gigapipe:3100
+        url: http://gigapipe:3100

@@ -12,9 +12,6 @@ dependencies:
 - name: altinity-clickhouse-operator
   version: 0.25.0
   repository: https://docs.altinity.com/clickhouse-operator/
-- name: gigapipe
-  version: 0.2.2
-  repository: https://metrico.github.io/gigapipe-helm
 - name: grafana
   version: 8.6.2
   repository: https://grafana.github.io/helm-charts

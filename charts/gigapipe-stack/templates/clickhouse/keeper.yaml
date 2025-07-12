@@ -1,4 +1,4 @@
-{{- if or (gt (int .Values.clickhouse.shards) 1) (gt (int .Values.clickhouse.replicas) 1) }}
+{{- if eq (include "gigapipe-stack.clickhouse.needsKeeper" .) "true" }}
 apiVersion: clickhouse-keeper.altinity.com/v1
 kind: ClickHouseKeeperInstallation
 metadata:

@@ -10,7 +10,7 @@ spec:
       logVolumeClaimTemplate: default
       serviceTemplate: default
   configuration:
-    {{- if or (gt (int .Values.clickhouse.shards) 1) (gt (int .Values.clickhouse.replicas) 1) }}
+    {{- if eq (include "gigapipe-stack.clickhouse.needsKeeper" .) "true" }}
     zookeeper:
       nodes:
         {{- $keeperReplicas := .Values.clickhouse.keeper.replicas | default 3 }}
@@ -49,7 +49,7 @@ spec:
                   containerPort: 9009
     serviceTemplates:
       - name: default
-        generateName: "{chi}"
+        generateName: "clickhouse-{chi}"
         spec:
           type: ClusterIP
           ports:
