@@ -28,12 +28,10 @@ gigapipe:
       cpu: 1000m
       memory: 2Gi
   
-  env:
-    LOG_DRILLDOWN: "true"
-    CLICKHOUSE_SERVER: clickhouse-gigapipe
-    CLICKHOUSE_DB: gigapipe
-    CLICKHOUSE_AUTH: gigapipe:gigapipe
-    CLUSTER_NAME: gigapipe
+  # Additional environment variables for gigapipe
+  env: 
+    - name: LOG_DRILLDOWN
+      value: "true"
   
   nodeSelector: {}
   tolerations: []
@@ -42,6 +40,11 @@ gigapipe:
 grafana:
   adminUser: gigapipe
   adminPassword: gigapipe
+  enabled: true
+  
+  # Install required plugins
+  plugins:
+    - grafana-clickhouse-datasource
   
   sidecar:
     dashboards:
@@ -60,14 +63,14 @@ grafana:
       datasources:
       - name: ClickHouse
         type: grafana-clickhouse-datasource
-        access: proxy
-        url: http://clickhouse-gigapipe:8123
-        basicAuth: true
-        basicAuthUser: gigapipe
-        secureJsonData:
-          basicAuthPassword: gigapipe
         jsonData:
+          host: clickhouse-gigapipe
+          port: 9000
+          username: gigapipe
           defaultDatabase: gigapipe
+          protocol: native
+        secureJsonData:
+          password: gigapipe
       - name: Logging
         type: loki
         uid: loki

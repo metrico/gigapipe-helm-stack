@@ -5,8 +5,7 @@ metadata:
   labels:
     app.kubernetes.io/name: gigapipe
     app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/version: {{ .Values.gigapipe.image.tag | default .Chart.AppVersion }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- include "gigapipe-stack.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.gigapipe.replicaCount }}
   selector:
@@ -30,21 +29,36 @@ spec:
               echo "ClickHouse is not reachable yet, waiting..."
               sleep 5
             done
+            {{- if eq (include "gigapipe-stack.clickhouse.needsKeeper" .) "true" }}
             echo "Checking if ClickHouse cluster is ready (keeper mode)..."
+            # Give extra time for cluster formation when using keeper
+            sleep 10
             # Check if we can execute a simple query with authentication
             until curl -sf "http://clickhouse-gigapipe:8123/?user=gigapipe&password=gigapipe" -d "SELECT 1" | grep -q "1"; do
               echo "ClickHouse cluster is not fully ready yet, waiting..."
               sleep 5
             done
+            {{- end }}
             echo "ClickHouse is ready!"
       containers:
       - name: gigapipe
         image: "{{ .Values.gigapipe.image.repository }}:{{ .Values.gigapipe.image.tag }}"
         imagePullPolicy: {{ .Values.gigapipe.image.pullPolicy | default "IfNotPresent" }}
         env:
-        {{- range $key, $value := .Values.gigapipe.env }}
-        - name: {{ $key }}
-          value: {{ $value | quote }}
+        # Chart-managed ClickHouse connection settings
+        - name: CLICKHOUSE_SERVER
+          value: "clickhouse-gigapipe"
+        - name: CLICKHOUSE_DB
+          value: "gigapipe"
+        - name: CLICKHOUSE_AUTH
+          value: "gigapipe:gigapipe"
+        {{- if eq (include "gigapipe-stack.clickhouse.needsKeeper" .) "true" }}
+        - name: CLUSTER_NAME
+          value: "gigapipe"
+        {{- end }}
+        # Additional user-provided environment variables
+        {{- with .Values.gigapipe.env }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
         ports:
         - name: http

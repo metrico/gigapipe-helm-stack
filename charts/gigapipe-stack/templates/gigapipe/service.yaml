@@ -5,8 +5,7 @@ metadata:
   labels:
     app.kubernetes.io/name: gigapipe
     app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/version: {{ .Values.gigapipe.image.tag | default "latest" }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- include "gigapipe-stack.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.gigapipe.service.type | default "ClusterIP" }}
   ports:
