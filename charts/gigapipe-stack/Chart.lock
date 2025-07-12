@@ -1,0 +1,12 @@
+dependencies:
+- name: altinity-clickhouse-operator
+  repository: https://docs.altinity.com/clickhouse-operator/
+  version: 0.25.0
+- name: gigapipe
+  repository: https://metrico.github.io/gigapipe-helm
+  version: 0.2.2
+- name: grafana
+  repository: https://grafana.github.io/helm-charts
+  version: 8.6.2
+digest: sha256:379974387d3047b106ff124196ee3d582e01f3bdeae2a63222a026180d5c719d
+generated: "2025-07-12T09:44:33.100158725+02:00"
