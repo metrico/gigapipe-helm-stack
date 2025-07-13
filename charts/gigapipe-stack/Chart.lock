@@ -1,0 +1,9 @@
+dependencies:
+- name: altinity-clickhouse-operator
+  repository: https://docs.altinity.com/clickhouse-operator/
+  version: 0.25.0
+- name: grafana
+  repository: https://grafana.github.io/helm-charts
+  version: 8.6.2
+digest: sha256:9ab92d101f0db0dfa65ac18de6b2becd8f946faac443a5ad91d401d118ae6917
+generated: "2025-07-12T10:11:02.538278279+02:00"

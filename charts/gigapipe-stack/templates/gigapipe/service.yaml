@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gigapipe
+  labels:
+    app.kubernetes.io/name: gigapipe
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- include "gigapipe-stack.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.gigapipe.service.type | default "ClusterIP" }}
+  ports:
+  - port: {{ .Values.gigapipe.service.port | default 3100 }}
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    app.kubernetes.io/name: gigapipe
+    app.kubernetes.io/instance: {{ .Release.Name }}

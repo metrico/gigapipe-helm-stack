@@ -1,0 +1,6 @@
+clickhouse:
+  storageClass: "local-path"
+  shards: 3
+  replicas: 1
+  keeper:
+    replicas: 3
